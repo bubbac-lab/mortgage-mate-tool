@@ -114,7 +114,7 @@ const LoanTypeSelector: React.FC = () => {
     <div className="bg-white p-4 rounded-lg shadow-sm border mb-6">
       <div className="mb-4">
         <label htmlFor="loan-type" className="block text-sm font-medium mb-1 text-gray-700">
-          Loan Type (Optional)
+          Loan Assistance Programs
         </label>
         <Select onValueChange={handleLoanTypeChange} value={selectedLoanType || ""}>
           <SelectTrigger id="loan-type" className="w-full" aria-label="Select loan type">
