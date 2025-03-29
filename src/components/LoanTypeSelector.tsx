@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { 
   Select, 
   SelectContent, 
@@ -12,7 +12,7 @@ import {
   CollapsibleContent, 
   CollapsibleTrigger 
 } from "@/components/ui/collapsible";
-import { Building, Home, Banknote, Users, HandshakeIcon } from "lucide-react";
+import { Building, Home, Banknote, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 // Define the loan type data structure
@@ -92,9 +92,9 @@ const loanTypes: Record<string, LoanTypeInfo> = {
   }
 };
 
-const LoanTypeSelector = () => {
-  const [selectedLoanType, setSelectedLoanType] = React.useState<string | null>(null);
-  const [isOpen, setIsOpen] = React.useState(false);
+const LoanTypeSelector: React.FC = () => {
+  const [selectedLoanType, setSelectedLoanType] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleLoanTypeChange = (value: string) => {
     setSelectedLoanType(value);
@@ -114,7 +114,7 @@ const LoanTypeSelector = () => {
             <SelectValue placeholder="Select loan type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="va" className="flex items-center">
+            <SelectItem value="va">
               <div className="flex items-center">
                 <Users className="h-4 w-4 mr-2 text-mortgage-primary" />
                 <span>VA Loans (For Military Veterans & Active Service Members)</span>
@@ -148,7 +148,7 @@ const LoanTypeSelector = () => {
         </Select>
       </div>
 
-      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="transition-all duration-300">
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         {selectedLoan && (
           <div className="mt-2">
             <div className="flex items-center gap-2 mb-2">
