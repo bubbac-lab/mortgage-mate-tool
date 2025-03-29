@@ -12,7 +12,7 @@ import {
   CollapsibleContent, 
   CollapsibleTrigger 
 } from "@/components/ui/collapsible";
-import { Building, Home, Banknote, Users } from "lucide-react";
+import { Building, Home, Banknote, Users, X } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 // Define the loan type data structure
@@ -97,6 +97,13 @@ const LoanTypeSelector: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLoanTypeChange = (value: string) => {
+    // If the value is "none", set selectedLoanType to null
+    if (value === "none") {
+      setSelectedLoanType(null);
+      setIsOpen(false);
+      return;
+    }
+    
     setSelectedLoanType(value);
     setIsOpen(!!value);
   };
@@ -109,11 +116,17 @@ const LoanTypeSelector: React.FC = () => {
         <label htmlFor="loan-type" className="block text-sm font-medium mb-1 text-gray-700">
           Loan Type (Optional)
         </label>
-        <Select onValueChange={handleLoanTypeChange}>
+        <Select onValueChange={handleLoanTypeChange} value={selectedLoanType || ""}>
           <SelectTrigger id="loan-type" className="w-full" aria-label="Select loan type">
             <SelectValue placeholder="Select loan type" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="none">
+              <div className="flex items-center">
+                <X className="h-4 w-4 mr-2 text-gray-500" />
+                <span>None / Clear selection</span>
+              </div>
+            </SelectItem>
             <SelectItem value="va">
               <div className="flex items-center">
                 <Users className="h-4 w-4 mr-2 text-mortgage-primary" />
