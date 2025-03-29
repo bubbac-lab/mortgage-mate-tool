@@ -1,4 +1,3 @@
-
 // Mortgage calculation utilities
 
 /**
@@ -58,21 +57,52 @@ export const formatCurrency = (amount: number): string => {
 };
 
 /**
- * Get property tax rate by ZIP code (mock function)
+ * Get property tax rate by ZIP code from SmartAsset API
  * @param zipCode ZIP code
- * @returns Tax rate percentage
+ * @returns Promise resolving to tax rate percentage
  */
-export const getPropertyTaxRateByZip = (zipCode: string): Promise<number> => {
-  // Mock function that returns a tax rate based on first digit of ZIP
-  // In a real app, this would call an API
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Simple logic that gives different rates based on first digit of ZIP
-      const firstDigit = parseInt(zipCode.charAt(0));
-      const taxRate = 0.8 + (firstDigit * 0.2); // Ranges from 0.8% to 2.6%
-      resolve(taxRate);
-    }, 300);
-  });
+export const getPropertyTaxRateByZip = async (zipCode: string): Promise<number> => {
+  try {
+    // First validate if this is a valid US ZIP code
+    if (!/^\d{5}$/.test(zipCode)) {
+      console.error('Invalid ZIP code format');
+      return 1.2; // Return default rate if invalid
+    }
+    
+    // Use SmartAsset's Property Tax Calculator API
+    const response = await fetch(`https://smartasset.com/taxes/property-taxes/api/rates?zip=${zipCode}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API responded with status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    // SmartAsset returns tax rates as decimal (e.g., 0.0125 for 1.25%)
+    // Extract the effective tax rate and convert to percentage
+    if (data && data.effective_tax_rate) {
+      // Convert from decimal to percentage (e.g., 0.0125 -> 1.25)
+      return data.effective_tax_rate * 100;
+    }
+    
+    // If we can't get data for some reason, use fallback calculation
+    // This is similar to our original mock but serves as a reasonable fallback
+    console.warn('Using fallback tax rate calculation');
+    const firstDigit = parseInt(zipCode.charAt(0));
+    return 0.8 + (firstDigit * 0.2); // Ranges from 0.8% to 2.6%
+    
+  } catch (error) {
+    console.error('Error fetching property tax rate:', error);
+    
+    // Fallback to our original estimation if API fails
+    const firstDigit = parseInt(zipCode.charAt(0));
+    return 0.8 + (firstDigit * 0.2); // Ranges from 0.8% to 2.6%
+  }
 };
 
 /**

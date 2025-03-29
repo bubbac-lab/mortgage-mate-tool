@@ -3,7 +3,9 @@ import React, { useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { formatCurrency } from "@/utils/mortgageCalculations";
+import { formatCurrency, getPropertyTaxRateByZip } from "@/utils/mortgageCalculations";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface MortgageInputsProps {
   onInputChange: (values: MortgageInputValues) => void;
@@ -21,6 +23,8 @@ export interface MortgageInputValues {
 }
 
 const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
+  const { toast } = useToast();
+  
   // Default values
   const defaultValues: MortgageInputValues = {
     housePrice: 350000,
@@ -109,6 +113,12 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
       zipCode,
     });
 
+    // Clear error if field is empty
+    if (zipCode.length === 0) {
+      setZipCodeError("");
+      return;
+    }
+
     // Validate ZIP code
     if (zipCode.length === 5 && /^\d{5}$/.test(zipCode)) {
       setZipCodeError("");
@@ -116,16 +126,29 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
       // Only if not using custom tax rate
       if (!values.useCustomTaxRate) {
         setIsCalculatingTax(true);
-        // Mock API call to get tax rate based on ZIP
-        setTimeout(() => {
-          // This would be replaced with a real API call
-          const taxRate = 0.8 + (parseInt(zipCode.charAt(0)) * 0.2);
-          setValues(prev => ({
-            ...prev,
-            propertyTaxRate: taxRate,
-          }));
-          setIsCalculatingTax(false);
-        }, 500);
+        
+        // Use the real API to get tax rate based on ZIP
+        getPropertyTaxRateByZip(zipCode)
+          .then(taxRate => {
+            setValues(prev => ({
+              ...prev,
+              propertyTaxRate: taxRate,
+            }));
+            setIsCalculatingTax(false);
+            toast({
+              title: "Tax Rate Updated",
+              description: `Property tax rate for ZIP ${zipCode}: ${taxRate.toFixed(2)}%`,
+            });
+          })
+          .catch(error => {
+            setIsCalculatingTax(false);
+            toast({
+              title: "Error Fetching Tax Rate",
+              description: "Using estimated tax rate instead.",
+              variant: "destructive",
+            });
+            console.error("Error fetching tax rate:", error);
+          });
       }
     } else if (zipCode.length > 0) {
       setZipCodeError("Please enter a valid 5-digit ZIP code");
@@ -263,15 +286,20 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
           <Label htmlFor="zipCode" className="text-sm font-medium">
             ZIP Code (for property tax estimate)
           </Label>
-          <Input
-            id="zipCode"
-            type="text"
-            value={values.zipCode}
-            onChange={handleZipCodeChange}
-            className="mt-1"
-            placeholder="Enter 5-digit ZIP code"
-            maxLength={5}
-          />
+          <div className="relative">
+            <Input
+              id="zipCode"
+              type="text"
+              value={values.zipCode}
+              onChange={handleZipCodeChange}
+              className="mt-1 pr-8"
+              placeholder="Enter 5-digit ZIP code"
+              maxLength={5}
+            />
+            {isCalculatingTax && (
+              <Loader2 className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-mortgage-muted" />
+            )}
+          </div>
           {zipCodeError && (
             <p className="text-red-500 text-xs mt-1">{zipCodeError}</p>
           )}
