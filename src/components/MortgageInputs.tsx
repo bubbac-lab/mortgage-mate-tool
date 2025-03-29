@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,7 @@ import { formatCurrency, getPropertyTaxRateByZip } from "@/utils/mortgageCalcula
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import TaxRateDisplay from "./TaxRateDisplay";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface MortgageInputsProps {
   onInputChange: (values: MortgageInputValues) => void;
@@ -24,6 +26,7 @@ export interface MortgageInputValues {
 
 const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   
   const defaultValues: MortgageInputValues = {
     housePrice: 350000,
@@ -175,7 +178,9 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
           </Label>
           <Input
             id="housePrice"
-            type="text"
+            type={isMobile ? "number" : "text"}
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={formatCurrency(values.housePrice)}
             onChange={handleHousePriceChange}
             className="mt-1"
