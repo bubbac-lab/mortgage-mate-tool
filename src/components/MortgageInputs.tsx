@@ -40,19 +40,36 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
 
   const [values, setValues] = useState<MortgageInputValues>(defaultValues);
   const [formattedHousePrice, setFormattedHousePrice] = useState<string>(formatCurrency(defaultValues.housePrice));
+  const [mobileHousePrice, setMobileHousePrice] = useState<string>(defaultValues.housePrice.toString());
   const [zipCodeError, setZipCodeError] = useState<string>("");
   const [isCalculatingTax, setIsCalculatingTax] = useState<boolean>(false);
 
   const handleHousePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const price = parseFloat(e.target.value.replace(/[^0-9]/g, ""));
-    if (!isNaN(price)) {
-      const newDownPaymentAmount = (price * values.downPaymentPercent) / 100;
-      setValues({
-        ...values,
-        housePrice: price,
-        downPaymentAmount: newDownPaymentAmount,
-      });
-      setFormattedHousePrice(formatCurrency(price));
+    if (isMobile) {
+      const inputValue = e.target.value;
+      setMobileHousePrice(inputValue);
+      
+      const price = parseFloat(inputValue);
+      if (!isNaN(price)) {
+        const newDownPaymentAmount = (price * values.downPaymentPercent) / 100;
+        setValues({
+          ...values,
+          housePrice: price,
+          downPaymentAmount: newDownPaymentAmount,
+        });
+        setFormattedHousePrice(formatCurrency(price));
+      }
+    } else {
+      const price = parseFloat(e.target.value.replace(/[^0-9]/g, ""));
+      if (!isNaN(price)) {
+        const newDownPaymentAmount = (price * values.downPaymentPercent) / 100;
+        setValues({
+          ...values,
+          housePrice: price,
+          downPaymentAmount: newDownPaymentAmount,
+        });
+        setFormattedHousePrice(formatCurrency(price));
+      }
     }
   };
 
@@ -161,6 +178,10 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
     onInputChange(values);
   }, [values, onInputChange]);
 
+  useEffect(() => {
+    setMobileHousePrice(defaultValues.housePrice.toString());
+  }, []);
+
   return (
     <div className="space-y-6">
       <div className="bg-white p-6 rounded-lg shadow-md">
@@ -175,7 +196,7 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
             type={isMobile ? "number" : "text"}
             inputMode="numeric"
             pattern="[0-9]*"
-            value={formattedHousePrice}
+            value={isMobile ? mobileHousePrice : formattedHousePrice}
             onChange={handleHousePriceChange}
             className="mt-1"
           />
