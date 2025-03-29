@@ -40,36 +40,20 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
 
   const [values, setValues] = useState<MortgageInputValues>(defaultValues);
   const [formattedHousePrice, setFormattedHousePrice] = useState<string>(formatCurrency(defaultValues.housePrice));
-  const [mobileHousePrice, setMobileHousePrice] = useState<string>(defaultValues.housePrice.toString());
-  const [zipCodeError, setZipCodeError] = useState<string>("");
-  const [isCalculatingTax, setIsCalculatingTax] = useState<boolean>(false);
 
   const handleHousePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (isMobile) {
-      const inputValue = e.target.value;
-      setMobileHousePrice(inputValue);
-      
-      const price = parseFloat(inputValue);
-      if (!isNaN(price)) {
-        const newDownPaymentAmount = (price * values.downPaymentPercent) / 100;
-        setValues({
-          ...values,
-          housePrice: price,
-          downPaymentAmount: newDownPaymentAmount,
-        });
-        setFormattedHousePrice(formatCurrency(price));
-      }
-    } else {
-      const price = parseFloat(e.target.value.replace(/[^0-9]/g, ""));
-      if (!isNaN(price)) {
-        const newDownPaymentAmount = (price * values.downPaymentPercent) / 100;
-        setValues({
-          ...values,
-          housePrice: price,
-          downPaymentAmount: newDownPaymentAmount,
-        });
-        setFormattedHousePrice(formatCurrency(price));
-      }
+    const inputValue = e.target.value;
+    const sanitizedValue = inputValue.replace(/[^0-9.]/g, "");
+    const price = parseFloat(sanitizedValue);
+    
+    if (!isNaN(price)) {
+      const newDownPaymentAmount = (price * values.downPaymentPercent) / 100;
+      setValues({
+        ...values,
+        housePrice: price,
+        downPaymentAmount: newDownPaymentAmount,
+      });
+      setFormattedHousePrice(formatCurrency(price));
     }
   };
 
@@ -179,8 +163,11 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
   }, [values, onInputChange]);
 
   useEffect(() => {
-    setMobileHousePrice(defaultValues.housePrice.toString());
+    setFormattedHousePrice(formatCurrency(defaultValues.housePrice));
   }, []);
+
+  const [zipCodeError, setZipCodeError] = useState<string>("");
+  const [isCalculatingTax, setIsCalculatingTax] = useState<boolean>(false);
 
   return (
     <div className="space-y-6">
@@ -193,10 +180,9 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
           </Label>
           <Input
             id="housePrice"
-            type={isMobile ? "number" : "text"}
+            type={isMobile ? "text" : "text"}
             inputMode="numeric"
-            pattern="[0-9]*"
-            value={isMobile ? mobileHousePrice : formattedHousePrice}
+            value={formattedHousePrice}
             onChange={handleHousePriceChange}
             className="mt-1"
           />
