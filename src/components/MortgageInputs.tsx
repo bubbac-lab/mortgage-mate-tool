@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
@@ -6,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { formatCurrency, getPropertyTaxRateByZip } from "@/utils/mortgageCalculations";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import TaxRateDisplay from "./TaxRateDisplay";
 
 interface MortgageInputsProps {
   onInputChange: (values: MortgageInputValues) => void;
@@ -25,7 +25,6 @@ export interface MortgageInputValues {
 const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
   const { toast } = useToast();
   
-  // Default values
   const defaultValues: MortgageInputValues = {
     housePrice: 350000,
     downPaymentPercent: 20,
@@ -41,7 +40,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
   const [zipCodeError, setZipCodeError] = useState<string>("");
   const [isCalculatingTax, setIsCalculatingTax] = useState<boolean>(false);
 
-  // Handle house price change
   const handleHousePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const price = parseFloat(e.target.value.replace(/[^0-9]/g, ""));
     if (!isNaN(price)) {
@@ -54,7 +52,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
     }
   };
 
-  // Handle interest rate slider change
   const handleInterestRateChange = (value: number[]) => {
     setValues({
       ...values,
@@ -62,7 +59,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
     });
   };
 
-  // Handle interest rate input change for precise control
   const handleInterestRateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rate = parseFloat(e.target.value);
     if (!isNaN(rate) && rate >= 0.1 && rate <= 10) {
@@ -73,7 +69,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
     }
   };
 
-  // Handle down payment percentage slider change
   const handleDownPaymentPercentChange = (value: number[]) => {
     const percent = value[0];
     const amount = (values.housePrice * percent) / 100;
@@ -84,7 +79,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
     });
   };
 
-  // Handle down payment amount input change
   const handleDownPaymentAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const amount = parseFloat(e.target.value.replace(/[^0-9]/g, ""));
     if (!isNaN(amount) && amount >= 0 && amount <= values.housePrice) {
@@ -97,7 +91,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
     }
   };
 
-  // Handle loan term change
   const handleLoanTermChange = (term: number) => {
     setValues({
       ...values,
@@ -105,7 +98,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
     });
   };
 
-  // Handle ZIP code change
   const handleZipCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const zipCode = e.target.value.slice(0, 5);
     setValues({
@@ -113,21 +105,17 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
       zipCode,
     });
 
-    // Clear error if field is empty
     if (zipCode.length === 0) {
       setZipCodeError("");
       return;
     }
 
-    // Validate ZIP code
     if (zipCode.length === 5 && /^\d{5}$/.test(zipCode)) {
       setZipCodeError("");
       
-      // Only if not using custom tax rate
       if (!values.useCustomTaxRate) {
         setIsCalculatingTax(true);
         
-        // Use the real API to get tax rate based on ZIP
         getPropertyTaxRateByZip(zipCode)
           .then(taxRate => {
             setValues(prev => ({
@@ -155,7 +143,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
     }
   };
 
-  // Handle property tax rate change
   const handleTaxRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rate = parseFloat(e.target.value);
     if (!isNaN(rate) && rate >= 0) {
@@ -166,7 +153,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
     }
   };
 
-  // Toggle custom tax rate
   const handleToggleCustomTax = () => {
     setValues({
       ...values,
@@ -174,7 +160,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
     });
   };
 
-  // Notify parent component whenever values change
   useEffect(() => {
     onInputChange(values);
   }, [values, onInputChange]);
@@ -184,7 +169,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Mortgage Details</h2>
         
-        {/* House Price */}
         <div className="mb-6">
           <Label htmlFor="housePrice" className="text-sm font-medium">
             House Price
@@ -198,7 +182,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
           />
         </div>
 
-        {/* Interest Rate */}
         <div className="mb-6">
           <div className="flex justify-between items-center">
             <Label htmlFor="interestRate" className="text-sm font-medium">
@@ -229,7 +212,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
           />
         </div>
 
-        {/* Down Payment */}
         <div className="mb-6">
           <div className="flex justify-between items-center">
             <Label htmlFor="downPayment" className="text-sm font-medium">
@@ -254,7 +236,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
           />
         </div>
 
-        {/* Loan Term */}
         <div className="mb-6">
           <Label className="text-sm font-medium block mb-2">Loan Term</Label>
           <div className="flex gap-3">
@@ -281,7 +262,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
           </div>
         </div>
 
-        {/* ZIP Code and Property Tax */}
         <div className="mb-6">
           <Label htmlFor="zipCode" className="text-sm font-medium">
             ZIP Code (for property tax estimate)
@@ -349,6 +329,13 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
           </div>
         </div>
       </div>
+
+      <TaxRateDisplay 
+        zipCode={values.zipCode}
+        propertyTaxRate={values.propertyTaxRate}
+        isCalculatingTax={isCalculatingTax}
+        useCustomTaxRate={values.useCustomTaxRate}
+      />
     </div>
   );
 };
