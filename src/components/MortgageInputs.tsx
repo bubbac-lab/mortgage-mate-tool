@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
@@ -53,13 +52,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
         downPaymentAmount: newDownPaymentAmount,
       });
     }
-  };
-
-  const handleInterestRateChange = (value: number[]) => {
-    setValues({
-      ...values,
-      interestRate: value[0],
-    });
   };
 
   const handleInterestRateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -189,7 +181,7 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
 
         <div className="mb-6">
           <div className="flex justify-between items-center">
-            <Label htmlFor="interestRate" className="text-sm font-medium">
+            <Label htmlFor="interestRateInput" className="text-sm font-medium">
               Interest Rate
             </Label>
             <div className="flex items-center">
@@ -206,15 +198,6 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
               <span className="ml-1">%</span>
             </div>
           </div>
-          <Slider
-            id="interestRate"
-            min={0.1}
-            max={10}
-            step={0.125}
-            value={[values.interestRate]}
-            onValueChange={handleInterestRateChange}
-            className="mt-2"
-          />
         </div>
 
         <div className="mb-6">
