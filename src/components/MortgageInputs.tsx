@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
@@ -40,6 +39,7 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
   };
 
   const [values, setValues] = useState<MortgageInputValues>(defaultValues);
+  const [formattedHousePrice, setFormattedHousePrice] = useState<string>(formatCurrency(defaultValues.housePrice));
   const [zipCodeError, setZipCodeError] = useState<string>("");
   const [isCalculatingTax, setIsCalculatingTax] = useState<boolean>(false);
 
@@ -52,6 +52,7 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
         housePrice: price,
         downPaymentAmount: newDownPaymentAmount,
       });
+      setFormattedHousePrice(formatCurrency(price));
     }
   };
 
@@ -174,7 +175,7 @@ const MortgageInputs: React.FC<MortgageInputsProps> = ({ onInputChange }) => {
             type={isMobile ? "number" : "text"}
             inputMode="numeric"
             pattern="[0-9]*"
-            value={formatCurrency(values.housePrice)}
+            value={formattedHousePrice}
             onChange={handleHousePriceChange}
             className="mt-1"
           />
