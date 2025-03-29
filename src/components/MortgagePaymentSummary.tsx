@@ -3,6 +3,7 @@ import React from "react";
 import { Progress } from "@/components/ui/progress";
 import { formatCurrency } from "@/utils/mortgageCalculations";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface MortgagePaymentSummaryProps {
   principalAndInterest: number;
@@ -15,6 +16,8 @@ const MortgagePaymentSummary: React.FC<MortgagePaymentSummaryProps> = ({
   propertyTax,
   totalPayment,
 }) => {
+  const isMobile = useIsMobile();
+  
   // Prepare data for pie chart
   const chartData = [
     {
@@ -30,27 +33,27 @@ const MortgagePaymentSummary: React.FC<MortgagePaymentSummaryProps> = ({
   ];
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Payment Summary</h2>
       
       <div className="mb-6">
         <div className="text-center">
           <h3 className="text-sm font-medium text-mortgage-muted">Monthly Payment</h3>
-          <p className="text-4xl font-bold text-mortgage-primary">
+          <p className="text-3xl sm:text-4xl font-bold text-mortgage-primary">
             {formatCurrency(totalPayment)}
           </p>
         </div>
       </div>
 
       <div className="mb-6">
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
           <PieChart>
             <Pie
               data={chartData}
               cx="50%"
               cy="50%"
-              innerRadius={60}
-              outerRadius={80}
+              innerRadius={isMobile ? 40 : 60}
+              outerRadius={isMobile ? 60 : 80}
               paddingAngle={2}
               dataKey="value"
             >
@@ -59,12 +62,12 @@ const MortgagePaymentSummary: React.FC<MortgagePaymentSummaryProps> = ({
               ))}
             </Pie>
             <Legend
-              layout="vertical"
-              verticalAlign="middle"
-              align="right"
+              layout={isMobile ? "horizontal" : "vertical"}
+              verticalAlign={isMobile ? "bottom" : "middle"}
+              align={isMobile ? "center" : "right"}
               formatter={(value, entry, index) => {
                 return (
-                  <span className="text-sm">
+                  <span className="text-xs sm:text-sm">
                     {value}: {formatCurrency(chartData[index!].value)}
                   </span>
                 );
@@ -74,9 +77,9 @@ const MortgagePaymentSummary: React.FC<MortgagePaymentSummaryProps> = ({
         </ResponsiveContainer>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         <div>
-          <div className="flex justify-between text-sm mb-1">
+          <div className="flex justify-between text-xs sm:text-sm mb-1">
             <span>Principal & Interest</span>
             <span className="font-medium">{formatCurrency(principalAndInterest)}</span>
           </div>
@@ -84,7 +87,7 @@ const MortgagePaymentSummary: React.FC<MortgagePaymentSummaryProps> = ({
         </div>
 
         <div>
-          <div className="flex justify-between text-sm mb-1">
+          <div className="flex justify-between text-xs sm:text-sm mb-1">
             <span>Property Tax</span>
             <span className="font-medium">{formatCurrency(propertyTax)}</span>
           </div>
@@ -92,7 +95,7 @@ const MortgagePaymentSummary: React.FC<MortgagePaymentSummaryProps> = ({
         </div>
 
         <div className="pt-3 mt-3 border-t">
-          <div className="flex justify-between">
+          <div className="flex justify-between text-sm sm:text-base">
             <span className="font-medium">Total Monthly Payment</span>
             <span className="font-bold">{formatCurrency(totalPayment)}</span>
           </div>
