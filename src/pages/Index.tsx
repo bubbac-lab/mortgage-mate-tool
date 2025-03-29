@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import MortgageInputs, { MortgageInputValues } from "@/components/MortgageInputs";
 import MortgagePaymentSummary from "@/components/MortgagePaymentSummary";
 import AmortizationSchedule from "@/components/AmortizationSchedule";
+import LoanTypeSelector from "@/components/LoanTypeSelector";
 import { 
   calculateMonthlyPayment, 
   calculatePropertyTax, 
@@ -84,6 +85,7 @@ const Index = () => {
           <div className="flex flex-col gap-6 md:flex-row">
             {/* Left column - Inputs */}
             <div className="md:w-1/3">
+              <LoanTypeSelector />
               <MortgageInputs onInputChange={setMortgageValues} />
             </div>
             
