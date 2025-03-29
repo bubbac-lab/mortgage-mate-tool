@@ -38,11 +38,11 @@ const LoanTypeSelector: React.FC = () => {
       />
 
       <Button 
-        variant="outline" 
-        className="w-full mt-2 border-dashed border-mortgage-muted text-mortgage-primary flex items-center justify-center gap-2"
+        variant="default" 
+        className="w-full mt-3 mb-1 bg-mortgage-secondary hover:bg-mortgage-secondary/90 text-white font-medium py-2 flex items-center justify-center gap-2 shadow-sm"
         onClick={() => navigate('/contact-us')}
       >
-        <MessageCircle className="h-4 w-4" />
+        <MessageCircle className="h-5 w-5" />
         Not Sure? Talk to us!
       </Button>
 
