@@ -14,9 +14,9 @@ import { Calculator, Home, Info } from "lucide-react";
 
 const Index = () => {
   const [mortgageValues, setMortgageValues] = useState<MortgageInputValues>({
-    housePrice: 350000,
+    housePrice: 500000,
     downPaymentPercent: 20,
-    downPaymentAmount: 70000,
+    downPaymentAmount: 100000,
     interestRate: 6.5,
     loanTerm: 30,
     zipCode: "",
