@@ -16,7 +16,7 @@ const Index = () => {
     housePrice: 350000,
     downPaymentPercent: 20,
     downPaymentAmount: 70000,
-    interestRate: 4.5,
+    interestRate: 6.5,
     loanTerm: 30,
     zipCode: "",
     propertyTaxRate: 1.2,
