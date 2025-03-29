@@ -23,12 +23,12 @@ const MortgagePaymentSummary: React.FC<MortgagePaymentSummaryProps> = ({
     {
       name: "Principal & Interest",
       value: principalAndInterest,
-      color: "#0EA5E9", // mortgage-primary
+      color: "#143D60", // Updated to dark blue (primary)
     },
     {
       name: "Property Tax",
       value: propertyTax,
-      color: "#F97316", // mortgage-secondary
+      color: "#EB5B00", // Updated to orange (secondary)
     },
   ];
 

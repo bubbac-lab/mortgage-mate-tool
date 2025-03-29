@@ -65,11 +65,11 @@ export default {
 				},
 				mortgage: {
 					// Updated color scheme
-					primary: '#007074',    // Teal
-					accent: '#034C53',     // Dark Teal
-					secondary: '#F38C79',  // Coral
+					primary: '#143D60',    // Dark Blue
+					accent: '#DDEB9D',     // Pale Green
+					secondary: '#EB5B00',  // Orange
 					muted: '#94A3B8',      // Keeping the original muted color
-					highlight: '#FFC1B4',  // Light Coral
+					highlight: '#A0C878',  // Medium Green
 				}
 			},
 			borderRadius: {

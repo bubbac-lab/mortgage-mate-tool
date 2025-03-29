@@ -76,10 +76,10 @@ const TaxRateDisplay: React.FC<TaxRateDisplayProps> = ({
                 className="h-2 mt-1 bg-gray-100"
                 indicatorClassName={
                   getRatingText() === "Low"
-                    ? "bg-green-500"
+                    ? "bg-mortgage-highlight" // Green - A0C878
                     : getRatingText() === "High"
-                    ? "bg-red-500"
-                    : "bg-yellow-500"
+                    ? "bg-mortgage-secondary" // Orange - EB5B00
+                    : "bg-mortgage-accent" // Pale Green - DDEB9D
                 }
               />
             </div>

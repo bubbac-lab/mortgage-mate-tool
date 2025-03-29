@@ -114,14 +114,14 @@ const AmortizationSchedule: React.FC<AmortizationScheduleProps> = ({
               type="monotone" 
               dataKey="balance" 
               name="Remaining Balance" 
-              stroke="#0EA5E9" 
+              stroke="#143D60" // Updated to dark blue (primary)
               activeDot={{ r: 8 }} 
             />
             <Line 
               type="monotone" 
               dataKey="cumulativeInterest" 
               name="Cumulative Interest" 
-              stroke="#F97316" 
+              stroke="#EB5B00" // Updated to orange (secondary)
             />
           </LineChart>
         </ResponsiveContainer>
