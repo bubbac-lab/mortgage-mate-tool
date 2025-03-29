@@ -17,7 +17,7 @@ interface LoanTypeDropdownProps {
 const LoanTypeDropdown: React.FC<LoanTypeDropdownProps> = ({ value, onChange }) => {
   return (
     <div className="mb-4">
-      <label htmlFor="loan-type" className="block text-sm font-medium mb-1 text-gray-700">
+      <label htmlFor="loan-type" className="block text-lg font-semibold mb-2 text-gray-900">
         Loan Assistance Programs
       </label>
       <Select onValueChange={onChange} value={value || ""}>
