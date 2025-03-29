@@ -7,10 +7,14 @@ import {
 import { loanTypes } from "./loan-selector/loan-types-data";
 import LoanTypeDropdown from "./loan-selector/LoanTypeDropdown";
 import LoanTypeDetails from "./loan-selector/LoanTypeDetails";
+import { Button } from "@/components/ui/button";
+import { MessageCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const LoanTypeSelector: React.FC = () => {
   const [selectedLoanType, setSelectedLoanType] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleLoanTypeChange = (value: string) => {
     // If the value is "none", set selectedLoanType to null
@@ -32,6 +36,15 @@ const LoanTypeSelector: React.FC = () => {
         value={selectedLoanType} 
         onChange={handleLoanTypeChange} 
       />
+
+      <Button 
+        variant="outline" 
+        className="w-full mt-2 border-dashed border-mortgage-muted text-mortgage-primary flex items-center justify-center gap-2"
+        onClick={() => navigate('/contact-us')}
+      >
+        <MessageCircle className="h-4 w-4" />
+        Not Sure? Talk to us!
+      </Button>
 
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         {selectedLoan && <LoanTypeDetails loanInfo={selectedLoan} />}
